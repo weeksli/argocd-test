@@ -1,0 +1,108 @@
+job-scheduler:
+  image:
+    tag: "71-merge-20230203.513"
+    repository: harbor.sia-service.kr/mlops/scheduler
+  replicaCount: 2
+  service:
+    type: NodePort
+    port: 50052
+    nodePort: 30054
+    promPort: 9999
+  envs:
+    JOB_SCHEDULER_MODE: OP
+    REDIS_HOST: staging-job-scheduler-redis
+    CONFIG_MAP: staging-job-scheduler-cfg
+    SECRET: staging-job-scheduler-secret
+    ACTIVE_DEADLINE_SECONDS: "60"
+  volumes:
+    - name: shm
+      emptyDir:
+        medium: Memory
+        sizeLimit: 128Gi
+    - name: dataset
+      nfs:
+        server: idc-nas.sia-service.kr
+        path: /ifs/data/SIA/Dataset
+        readOnly: True
+    - name: scene
+      nfs:
+        server: idc-nas.sia-service.kr
+        path: /ifs/data/SIA/Scenes
+        readOnly: True
+    - name: video
+      nfs:
+        server: idc-nas.sia-service.kr
+        path: /ifs/data/SIA/Videos
+        readOnly: True
+    - name: mlops
+      nfs:
+        server: idc-nas.sia-service.kr
+        path: /ifs/data/SIA/k8s/dev/mlops
+    - name: research
+      nfs:
+        server: idc-nas.sia-service.kr
+        path: /ifs/data/SIA/k8s/dev/research
+  volumeMounts:
+    - name: shm
+      mountPath: /dev/shm
+    - name: dataset
+      mountPath: /nas/Dataset
+    - name: scene
+      mountPath: /nas/Scenes
+    - name: video
+      mountPath: /nas/Videos
+    - name: mlops
+      mountPath: /nas/k8s/dev/mlops
+    - name: research
+      mountPath: /nas/k8s/dev/research
+  config:
+    MLFLOW_TRACKING_URI: http://mlflow.sia-service.kr
+    MINIO_ROOT_USER: minio_user
+    MINIO_ROOT_PASSWORD: minio_password
+    MINIO_ACCESS_KEY: minio_user
+    MINIO_SECRET_KEY: minio_password
+    AWS_ACCESS_KEY_ID: minio_user
+    AWS_SECRET_ACCESS_KEY: minio_password
+    RESOURCE_NODE_LABELS: node-role.kubernetes.io/for-job-scheduler=true;node-role.kubernetes.io/job-scheduler=true
+  resources:
+    limits:
+      cpu: 1
+      memory: 300Mi
+    requests:
+      cpu: 1
+      memory: 300Mi
+  livenessProbe:
+    enabled: true
+    spec:
+      exec:
+        command:
+          - /bin/grpc_health_probe
+          - -addr
+          - localhost:50052
+          - -rpc-timeout 
+          - 10s
+      initialDelaySeconds: 5
+      periodSeconds: 120
+      timeoutSeconds: 3
+  readinessProbe:
+    enabled: true
+    spec:
+      exec:
+        command:
+          - /bin/grpc_health_probe
+          - -addr
+          - localhost:50052
+          - -rpc-timeout 
+          - 10s
+      initialDelaySeconds: 5
+      periodSeconds: 120
+      timeoutSeconds: 3
+  redis:
+    replicaCount: 1
+    resources:
+      limits:
+        cpu: 0.5
+        memory: 300Mi
+      requests:
+        cpu: 0.5
+        memory: 300Mi

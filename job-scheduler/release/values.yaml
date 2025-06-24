@@ -1,0 +1,199 @@
+job-scheduler:
+  image:
+    repository: harbor.sia-service.kr/mlops/scheduler
+    tag: "69-merge-20230117.502"
+  replicaCount: 3
+  service:
+    type: NodePort
+    port: 50052
+    nodePort: 30052
+    promPort: 9999
+  envs:
+    JOB_SCHEDULER_MODE: OP
+  config:
+    MLFLOW_TRACKING_URI: http://mlflow.sia-service.kr
+    MLFLOW_S3_ENDPOINT_URL: https://api-ml-minio.sia-service.kr
+    AWS_ACCESS_KEY_ID: mlops
+    AWS_SECRET_ACCESS_KEY: mlops2021!
+  volumes:
+    - name: shm
+      emptyDir:
+        medium: Memory
+        sizeLimit: 128Gi
+    - name: dataset
+      nfs:
+        server: idc-nas.sia-service.kr
+        path: /ifs/data/SIA/Dataset
+        readOnly: True
+    - name: scene
+      nfs:
+        server: idc-nas.sia-service.kr
+        path: /ifs/data/SIA/Scenes
+        readOnly: True
+    - name: video
+      nfs:
+        server: idc-nas.sia-service.kr
+        path: /ifs/data/SIA/Videos
+        readOnly: True
+    - name: mlops
+      nfs:
+        server: idc-nas.sia-service.kr
+        path: /ifs/data/SIA/k8s/dev/mlops
+    - name: research
+      nfs:
+        server: idc-nas.sia-service.kr
+        path: /ifs/data/SIA/k8s/dev/research
+    - name: ext
+      nfs:
+        server: ext-nas.sia-service.kr
+        path: /volume1/nfs
+    - name: cog
+      nfs:
+        server: idc-nas.sia-service.kr
+        path: /ifs/data/SIA/COG
+        readOnly: true
+    - name: dlk-inference
+      nfs:
+        server: idc-nas.sia-service.kr
+        path: /ifs/data/SIA/Dataset/dlk_inference
+    - name: projects
+      nfs:
+        server: idc-nas.sia-service.kr
+        path: /ifs/data/SIA/Projects
+  volumeMounts:
+    - name: shm
+      mountPath: /dev/shm
+    - name: dataset
+      mountPath: /nas/Dataset
+    - name: scene
+      mountPath: /nas/Scenes
+    - name: video
+      mountPath: /nas/Videos
+    - name: mlops
+      mountPath: /nas/k8s/dev/mlops
+    - name: research
+      mountPath: /nas/k8s/dev/research
+    - name: ext
+      mountPath: /ext
+    - name: cog
+      mountPath: /nas/COG
+    - name: dlk-inference
+      mountPath: /nas/Dataset/dlk_inference
+    - name: projects
+      mountPath: /nas/Projects
+  resources:
+    limits:
+      cpu: 5
+      memory: 1Gi
+    requests:
+      cpu: 3
+      memory: 1Gi
+  livenessProbe:
+    enabled: true
+    spec:
+      exec:
+        command:
+          - /bin/grpc_health_probe
+          - -addr
+          - localhost:50052
+          - -rpc-timeout 
+          - 20s
+      initialDelaySeconds: 10
+      periodSeconds: 120
+      timeoutSeconds: 3
+  readinessProbe:
+    enabled: true
+    spec:
+      exec:
+        command:
+          - /bin/grpc_health_probe
+          - -addr
+          - localhost:50052
+          - -rpc-timeout 
+          - 20s
+      initialDelaySeconds: 5
+      periodSeconds: 120
+      timeoutSeconds: 3
+  redis:
+    replicaCount: 1
+    resources:
+      limits:
+        cpu: 0.5
+        memory: 300Mi
+      requests:
+        cpu: 0.5
+        memory: 300Mi
+  configmapVolumes:
+    - name: shm
+      emptyDir:
+        medium: Memory
+        sizeLimit: 128Gi
+    - name: dataset
+      nfs:
+        server: idc-nas.sia-service.kr
+        path: /ifs/data/SIA/Dataset
+        readOnly: True
+    - name: scene
+      nfs:
+        server: idc-nas.sia-service.kr
+        path: /ifs/data/SIA/Scenes
+        readOnly: True
+    - name: video
+      nfs:
+        server: idc-nas.sia-service.kr
+        path: /ifs/data/SIA/Videos
+        readOnly: True
+    - name: mlops
+      nfs:
+        server: idc-nas.sia-service.kr
+        path: /ifs/data/SIA/k8s/dev/mlops
+    - name: research
+      nfs:
+        server: idc-nas.sia-service.kr
+        path: /ifs/data/SIA/k8s/dev/research
+    - name: ext
+      nfs:
+        server: ext-nas.sia-service.kr
+        path: /volume1/nfs
+    - name: cog
+      nfs:
+        server: idc-nas.sia-service.kr
+        path: /ifs/data/SIA/COG
+        readOnly: true
+    - name: dlk-inference
+      nfs:
+        server: idc-nas.sia-service.kr
+        path: /ifs/data/SIA/Dataset/dlk_inference
+        readOnly: false
+    - name: projects
+      nfs:
+        server: idc-nas.sia-service.kr
+        path: /ifs/data/SIA/Projects
+    - name: dataops
+      nfs:
+        server: idc-nas.sia-service.kr
+        path: /ifs/data/SIA/k8s/dev/data
+        readOnly: true
+  configmapVolumeMounts:
+    - name: shm
+      mountPath: /dev/shm
+    - name: dataset
+      mountPath: /nas/Dataset
+    - name: scene
+      mountPath: /nas/Scenes
+    - name: video
+      mountPath: /nas/Videos
+    - name: mlops
+      mountPath: /nas/k8s/dev/mlops
+    - name: research
+      mountPath: /nas/k8s/dev/research
+    - name: ext
+      mountPath: /ext
+    - name: cog
+      mountPath: /nas/COG
+    - name: dlk-inference
+      mountPath: /nas/Dataset/dlk_inference
+    - name: projects
+      mountPath: /nas/Projects
+    - name: dataops
+      mountPath: /nas/k8s/data

@@ -1,0 +1,26 @@
+apiVersion: v2
+name: deploy-JobScheduler
+version: 0.1.0
+appVersion: 0.1.2
+description: GitOps repo for job-shcheduler charts
+type: application
+keywords:
+- gitops
+- dev
+- job-scheduler
+home: https://github.com/SIAnalytics/mlops-infra
+sources:
+- https://github.com/SIAnalytics/mlops-infra
+maintainers:
+- name: Seunhyun Jeon
+  email: jsh@si-analytics.ai
+- name: Junhwa Song
+  email: ehtan9867@si-analytics.ai
+- name: Younghwan Na
+  email: yhna@si-analytics.ai
+- name: Hakjin Lee
+  email: hakjinlee@si-analytics.ai
+dependencies:
+- name: job-scheduler
+  repository: https://harbor.sia-service.kr/chartrepo
+  version: 0.5.0-rc5
