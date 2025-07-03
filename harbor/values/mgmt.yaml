@@ -1,0 +1,142 @@
+harbor:
+  enabled: true
+  persistence:
+    enabled: true
+    persistentVolumeClaim:
+      registry:
+        storageClass: default
+        accessMode: ReadWriteMany
+        size: 10Gi
+      jobservice:
+        jobLog:
+          storageClass: default
+          accessMode: ReadWriteMany
+        size: 2Gi
+    imageChartStorage:
+      type: filesystem
+      filesystem:
+        rootdirectory: /storage
+  nginx:
+    replicas: 1
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 1Gi
+        cpu: 1
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: component
+                  operator: NotIn
+                  values:
+                    - nginx
+            topologyKey: kubernetes.io/hostname
+  portal:
+    replicas: 1
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 1Gi
+        cpu: 1
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: component
+                  operator: In
+                  values:
+                    - portal
+            topologyKey: kubernetes.io/hostname
+  core:
+    replicas: 1
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 1Gi
+        cpu: 1
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: component
+                  operator: In
+                  values:
+                    - core
+            topologyKey: kubernetes.io/hostname
+  jobservice:
+    replicas: 1
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 1Gi
+        cpu: 1
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: component
+                  operator: In
+                  values:
+                    - jobservice
+            topologyKey: kubernetes.io/hostname
+  registry:
+    replicas: 1
+    registry:
+      resources:
+        requests:
+          memory: 256Mi
+          cpu: 100m
+        limits:
+          memory: 1Gi
+          cpu: 1
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: component
+                  operator: In
+                  values:
+                    - registry
+            topologyKey: kubernetes.io/hostname
+    controller:
+      resources:
+        requests:
+          memory: 256Mi
+          cpu: 100m
+        limits:
+          memory: 1Gi
+          cpu: 1
+  trivy:
+    replicas: 1
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 1Gi
+        cpu: 1
+  database:
+    internal:
+      password: "sia@2020db"
+      shmSizeLimit: 2Gi
+  notary:
+    replicas: 1
+    enabled: false
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true

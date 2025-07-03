@@ -1,0 +1,36 @@
+nginx:
+  image:
+    repository: harbor.nims.go.kr/library/goharbor/nginx-photon
+portal:
+  image:
+    repository: harbor.nims.go.kr/library/goharbor/harbor-portal
+core:
+  image:
+    repository: harbor.nims.go.kr/library/goharbor/harbor-core
+jobservice:
+  image:
+    repository: harbor.nims.go.kr/library/goharbor/harbor-jobservice
+registry:
+  registry:
+    image:
+      repository: harbor.nims.go.kr/library/goharbor/registry-photon
+  controller:
+    image:
+      repository: harbor.nims.go.kr/library/goharbor/harbor-registryctl
+chartmuseum:
+  image:
+    repository: harbor.nims.go.kr/library/goharbor/chartmuseum-photon
+trivy:
+  image:
+    repository: harbor.nims.go.kr/library/goharbor/trivy-adapter-photon
+database:
+  internal:
+    image:
+      repository: harbor.nims.go.kr/library/goharbor/harbor-db
+redis:
+  internal:
+    image:
+      repository: harbor.nims.go.kr/library/goharbor/redis-photon
+exporter:
+  image:
+    repository: harbor.nims.go.kr/library/goharbor/harbor-exporter

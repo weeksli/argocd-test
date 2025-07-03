@@ -1,0 +1,12 @@
+dependencies:
+- name: harbor
+  repository: https://helm.goharbor.io
+  version: 1.12.0
+- name: temp-harbor-chart
+  repository: ""
+  version: 1.7.0
+- name: temp-harbor-chart
+  repository: ""
+  version: 1.7.0
+digest: sha256:413c46a215a920951cd868160ebf60cec959baa19dd5c06cc6ddb308f0177b65
+generated: "2025-03-04T01:41:34.208886441+09:00"

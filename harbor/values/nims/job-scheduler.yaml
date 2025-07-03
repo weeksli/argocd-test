@@ -1,0 +1,118 @@
+harbor:
+  enabled: true
+  expose:
+    type: ingress
+    tls:
+      enabled: false
+      certSource: auto
+      secret:
+        secretName: "harbor-secret"
+    ingress:
+      hosts:
+        core: harbor.nims.go.kr
+  externalURL: http://harbor.nims.go.kr
+  persistence:
+    enabled: true
+    persistentVolumeClaim:
+      registry:
+        storageClass: default
+        accessMode: ReadWriteMany
+        size: 10Ti
+      chartmuseum:
+        storageClass: default
+        accessMode: ReadWriteMany
+        size: 2Ti
+      jobservice:
+        storageClass: default
+        accessMode: ReadWriteMany
+        size: 2Ti
+  nginx:
+    replicas: 3
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 1Gi
+        cpu: 1
+  portal:
+    replicas: 3
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 1Gi
+        cpu: 1
+  core:
+    replicas: 3
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 1Gi
+        cpu: 1
+  jobservice:
+    replicas: 3
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 1Gi
+        cpu: 1
+  registry:
+    replicas: 3
+    registry:
+      resources:
+        requests:
+          memory: 256Mi
+          cpu: 100m
+        limits:
+          memory: 1Gi
+          cpu: 1
+    controller:
+      resources:
+        requests:
+          memory: 256Mi
+          cpu: 100m
+        limits:
+          memory: 1Gi
+          cpu: 1
+  chartmuseum:
+    replicas: 3
+    enabled: true
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 1Gi
+        cpu: 1
+  trivy:
+    replicas: 3
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 1Gi
+        cpu: 1
+  #  database:
+  #    internal:
+  #      password: "Harbor12345"
+  notary:
+    replicas: 3
+    enabled: false
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      relabelings:
+        - sourceLabels: [__meta_kubernetes_pod_node_name]
+          separator: ;
+          regex: ^(.*)$
+          targetLabel: nodename
+          replacement: $1
+          action: replace

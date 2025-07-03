@@ -1,0 +1,9 @@
+harbor:
+  enabled: false
+
+temp-harbor-chart:
+  enabled: false
+
+harbor-io-ingress:
+  enabled: false
+

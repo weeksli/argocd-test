@@ -1,0 +1,15 @@
+apiVersion: v1
+appVersion: 2.3.0
+description: Temporary chart for second harbor ingress
+home: https://github.com/sianalytics/sia-harbor
+icon: https://raw.githubusercontent.com/goharbor/website/master/static/img/logos/harbor-icon-color.png
+keywords:
+- harbor
+maintainers:
+- email: jhlee@si-analytics.ai
+  name: Jooho Lee
+name: temp-harbor-chart
+sources:
+- https://github.com/goharbor/harbor
+- https://github.com/goharbor/harbor-helm
+version: 1.7.0

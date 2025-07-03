@@ -1,0 +1,36 @@
+nginx:
+  image:
+    repository: docker.siadev.kr/library/goharbor/nginx-photon
+portal:
+  image:
+    repository: docker.siadev.kr/library/goharbor/harbor-portal
+core:
+  image:
+    repository: docker.siadev.kr/library/goharbor/harbor-core
+jobservice:
+  image:
+    repository: docker.siadev.kr/library/goharbor/harbor-jobservice
+registry:
+  registry:
+    image:
+      repository: docker.siadev.kr/library/goharbor/registry-photon
+  controller:
+    image:
+      repository: docker.siadev.kr/library/goharbor/harbor-registryctl
+chartmuseum:
+  image:
+    repository: docker.siadev.kr/library/goharbor/chartmuseum-photon
+trivy:
+  image:
+    repository: docker.siadev.kr/library/goharbor/trivy-adapter-photon
+database:
+  internal:
+    image:
+      repository: docker.siadev.kr/library/goharbor/harbor-db
+redis:
+  internal:
+    image:
+      repository: docker.siadev.kr/library/goharbor/redis-photon
+exporter:
+  image:
+    repository: docker.siadev.kr/library/goharbor/harbor-exporter

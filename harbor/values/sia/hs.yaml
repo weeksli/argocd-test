@@ -1,0 +1,171 @@
+harbor:
+  enabled: true
+  expose:
+    type: ingress
+    tls:
+      enabled: true
+      certSource: none
+    ingress:
+      hosts:
+        core: harbor.sia-service.kr
+      annotations:
+        nginx.ingress.kubernetes.io/client-body-buffer-size: "512M"
+  externalURL: https://harbor.sia-service.kr
+  persistence:
+    enabled: true
+    persistentVolumeClaim:
+      registry:
+        storageClass: default
+        accessMode: ReadWriteMany
+        size: 10Ti
+      chartmuseum:
+        storageClass: default
+        accessMode: ReadWriteMany
+        size: 2Ti
+      jobservice:
+        storageClass: default
+        accessMode: ReadWriteMany
+        size: 2Ti
+  nginx:
+    replicas: 3
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 1Gi
+        cpu: 1
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: component
+                  operator: NotIn
+                  values:
+                    - nginx
+            topologyKey: kubernetes.io/hostname
+  portal:
+    replicas: 3
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 1Gi
+        cpu: 1
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: component
+                  operator: In
+                  values:
+                    - portal
+            topologyKey: kubernetes.io/hostname
+  core:
+    replicas: 3
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 1Gi
+        cpu: 1
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: component
+                  operator: In
+                  values:
+                    - core
+            topologyKey: kubernetes.io/hostname
+  jobservice:
+    replicas: 3
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 1Gi
+        cpu: 1
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: component
+                  operator: In
+                  values:
+                    - jobservice
+            topologyKey: kubernetes.io/hostname
+  registry:
+    replicas: 3
+    registry:
+      resources:
+        requests:
+          memory: 256Mi
+          cpu: 100m
+        limits:
+          memory: 1Gi
+          cpu: 1
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: component
+                  operator: In
+                  values:
+                    - registry
+            topologyKey: kubernetes.io/hostname
+    controller:
+      resources:
+        requests:
+          memory: 256Mi
+          cpu: 100m
+        limits:
+          memory: 1Gi
+          cpu: 1
+  chartmuseum:
+    replicas: 3
+    enabled: true
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 1Gi
+        cpu: 1
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: component
+                  operator: In
+                  values:
+                    - chartmuseum
+            topologyKey: kubernetes.io/hostname
+  trivy:
+    replicas: 3
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 1Gi
+        cpu: 1
+  database:
+    internal:
+      password: "sia@2020db"
+  notary:
+    replicas: 3
+    enabled: false
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true

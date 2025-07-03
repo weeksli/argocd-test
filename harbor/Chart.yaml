@@ -1,0 +1,35 @@
+apiVersion: v2
+name: sia-harbor
+version: 1.8.0
+appVersion: 2.8.0
+description: An open source trusted cloud native registry that stores, signs, and scans content
+type: application
+keywords:
+  - infra
+  - service
+  - harbor
+  - registry
+home: https://github.com/idc-infra/k8s-service/harbor
+sources:
+  - "https://github.com/goharbor/harbor"
+  - "https://github.com/goharbor/harbor-helm"
+  - "https://github.com/idc-infra/k8s-service/harbor"
+maintainers:
+  - name: Massimo Fierro
+    email: massimo.fierro@si-analytics.ai
+  - name: Jooho Lee (former)
+    email: jhlee@si-analytics.ai
+  - name: SRE Chapter
+    email: sre@si-analytics.ai
+dependencies:
+  - name: harbor
+    repository: https://helm.goharbor.io
+    version: 1.12.0
+    condition: harbor.enabled
+  - name: temp-harbor-chart
+    version: 1.7.0
+    condition: temp-harbor-chart.enabled
+  - name: temp-harbor-chart
+    alias: harbor-io-ingress
+    version: 1.7.0
+    condition: harbor-io-ingress.enabled
