@@ -1,7 +1,7 @@
 apiVersion: v2
 name: sia-harbor
-version: 1.9.0
-appVersion: 2.9.0
+version: 1.11.0
+appVersion: 2.11.1
 description: An open source trusted cloud native registry that stores, signs, and scans content
 type: application
 keywords:
@@ -24,7 +24,7 @@ maintainers:
 dependencies:
   - name: harbor
     repository: https://helm.goharbor.io
-    version: 1.13.0
+    version: 1.15.1
     condition: harbor.enabled
   - name: temp-harbor-chart
     version: 1.7.0
