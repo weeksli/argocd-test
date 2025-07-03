@@ -1,5 +1,16 @@
 harbor:
   enabled: true
+  expose:
+    type: ingress
+    tls:
+      enabled: true
+      certSource: none
+    ingress:
+      hosts:
+        core: harbor-test.sia-service.kr
+      annotations:
+        nginx.ingress.kubernetes.io/client-body-buffer-size: "512M"
+  externalURL: https://harbor-test.sia-service.kr
   persistence:
     enabled: true
     persistentVolumeClaim:
